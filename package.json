@@ -1,0 +1,25 @@
+{
+  "name": "dawe-integration-reference",
+  "version": "1.0.0",
+  "description": "This is a reference implementation for how to integrate with export services",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-async-handler": "^1.2.0",
+    "express-basic-auth": "^1.2.1",
+    "express-session": "^1.17.2",
+    "hbs": "^4.2.0",
+    "knex": "^1.0.6",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^2.6.1",
+    "openid-client": "^5.1.4",
+    "pg": "^8.7.3"
+  }
+}
