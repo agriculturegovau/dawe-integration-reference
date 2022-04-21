@@ -14,24 +14,8 @@ const client_secret = process.env.CLIENT_SECRET
 const redirect_target = process.env.REDIRECT_TARGET
 const target_resource = process.env.TARGET_RESOURCE
 
-function date_format(date){
-  return date.toISOString().split('T')[0]
-}
-
-async function get_records(){
-  let data = await db.select(db.raw(`
-      *
-      `
-    ))
-    .from('temperature_data')
-  for (item of data){
-    item["reporting_date"] = date_format(item["reporting_date"])
-  }
-  return data
-}
 
 async function main(){
-  let records = await get_records()
   const b2cIssuer = await Issuer.discover(well_known_endpoint);
 
   const client = new b2cIssuer.Client({
@@ -43,39 +27,26 @@ async function main(){
 
   client[custom.clock_tolerance] = 5;
 
-  let authresults = await db('dawe_auth_tokens')
+  let results = await db('dawe_auth_tokens')
     .select('*')
     .orderBy('created_at', 'desc')
     .limit(1);
-  let estabresults = await db('estab_mapping')
-    .select('*')
-    .limit(1);
-
-  if (authresults[0] && estabresults[0]){
-    const tokenSet = await client.refresh(authresults[0]["refresh_token"]);
-    // console.debug(tokenSet)
-    await new Promise(r => setTimeout(r, 5000));
-    const auth_token = tokenSet['id_token']
-    let result = await send_records(records, estabresults[0].establishment_num, auth_token)
-    console.debug(result)
+  if (results[0]){
+    const tokenSet = await client.refresh(results[0]["refresh_token"]);
+    console.debug(tokenSet);
+    console.log('refreshed ID Token claims %j', tokenSet.claims());
+    let expires = new Date();
+    expires = new Date(expires.getTime() + 1000 * tokenSet.refresh_token_expires_in);
+    let record = {
+      created_at: new Date(),
+      expires_at: expires,
+      refresh_token: tokenSet.refresh_token,
+      farm_username: "admin"
+    }
+    let result = await db('dawe_auth_tokens').insert(record).returning('*');
   }
   // console.log('Finished')
 }
-
-async function send_records(records, establishment_num, auth_token){
-  const est_url = `${process.env.EXPORT_SERVICES_API_HOST}/intelligenceapi/temperature/${establishment_num}`
-  const est = await fetch(est_url,{
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'authorization': `Bearer ${auth_token}`
-    },
-    body: JSON.stringify(records)
-  });
-  return est.json()
-}
-
 
 (async () => {
     try {

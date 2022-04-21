@@ -2,18 +2,12 @@
 require('dotenv').config()
 
 let env = {
-    client: 'pg',
+    client: 'postgresql',
     connection: {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      options: {
-        encrypt: true,
-        enableArithAbort: true,
-        trustServerCertificate: true,
-        port: 5432
-      }
     },
     pool: {
       min: 2,
