@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
+<body>
+
+
+{{#unless logged_in}}
+<a href="/connect">Link with export services</a>
+{{/unless}}
+
+{{#if logged_in}}
+
+Linked to export services, name: <b>{{name}}</b>
+<br>
+
+
+
+{{/if}}
+
+{{#if linked_estab}}
+
+Linked to DAWE establishment with registration number: <b>{{linked_estab.establishment_num}}</b>
+
+
+
+<hr>
+{{/if}}
+
+<h3>Data</h3>
+
+<table>
+  <tr>
+    <th>reporting_date</th>
+    <th>volume</th>
+    <th>temp</th>
+  </tr>
+  {{#each temperature_data}}
+    <tr>
+      <td>{{this.reporting_date}}</td>
+      <td>{{this.volume}}</td>
+      <td>{{this.temp}}</td>
+    </tr>
+  {{/each}}
+</table>
+</body>
+</html>
