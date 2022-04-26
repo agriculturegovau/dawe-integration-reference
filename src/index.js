@@ -29,8 +29,6 @@ const session_secret = process.env.SESSION_SECRET
 
 const fetch = require('node-fetch')
 
-const cron = require('node-cron');
-
 run().catch(err => console.log(err));
 
 async function get_estabs(auth_token){
@@ -41,7 +39,12 @@ async function get_estabs(auth_token){
   return est.json()
 }
 
+
+
 async function run() {
+  const users = {}
+  users[username] = password
+
   const app = express();
   app.use(morgan('dev'));
 
@@ -50,7 +53,7 @@ async function run() {
   }))
   app.use(basicAuth({
     challenge: true,
-    users: { username: password }
+    users: users
   }))
   app.set('view engine', 'hbs');
   app.use(session({
