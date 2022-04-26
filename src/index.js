@@ -1,8 +1,4 @@
-'use strict';
-const dotenv = require('dotenv');
-if (process.env.DOTENV){
-  dotenv.config();
-}
+require('dotenv').config()
 const knex = require ('knex');
 const knex_config = require('../knexfile');
 const asyncHandler = require("express-async-handler")
@@ -145,8 +141,6 @@ async function main() {
     const params = client.callbackParams(req);
     const code_verifier = req.session.code_verifier
     const tokenSet = await client.callback(redirect_target, params, { code_verifier });
-    // console.log('received and validated tokens %j', tokenSet);
-    // console.log('validated ID Token claims %j', tokenSet.claims());
 
     let expires = new Date();
     expires = new Date(expires.getTime() + 1000 * tokenSet.refresh_token_expires_in);

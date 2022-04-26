@@ -1,6 +1,4 @@
-
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config()
 const  knex = require('knex');
 const knex_config = require('../knexfile.js');
 const db = knex(knex_config["development"]);
@@ -46,7 +44,5 @@ async function main(){
         process.exit(0)
     } catch (e) {
       console.debug(e)
-        // Deal with the fact the chain failed
     }
 })();
-/* eslint-enable */

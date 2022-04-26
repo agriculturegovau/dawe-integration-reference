@@ -1,5 +1,4 @@
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config()
 const  knex = require('knex');
 const knex_config = require('../knexfile.js');
 const db = knex(knex_config["development"]);
@@ -54,13 +53,12 @@ async function main(){
 
   if (authresults[0] && estabresults[0]){
     const tokenSet = await client.refresh(authresults[0]["refresh_token"]);
-    // console.debug(tokenSet)
     await new Promise(r => setTimeout(r, 5000));
     const auth_token = tokenSet['id_token']
     let result = await send_records(records, estabresults[0].establishment_num, auth_token)
     console.debug(result)
   }
-  // console.log('Finished')
+  console.log('Finished')
 }
 
 async function send_records(records, establishment_num, auth_token){
@@ -77,7 +75,6 @@ async function send_records(records, establishment_num, auth_token){
   return est.json()
 }
 
-
 (async () => {
     try {
         var text = await main();
@@ -85,7 +82,5 @@ async function send_records(records, establishment_num, auth_token){
         process.exit(0)
     } catch (e) {
       console.debug(e)
-        // Deal with the fact the chain failed
     }
 })();
-/* eslint-enable */

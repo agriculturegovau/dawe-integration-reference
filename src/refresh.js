@@ -1,5 +1,4 @@
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config()
 const  knex = require('knex');
 const knex_config = require('../knexfile.js');
 const db = knex(knex_config["development"]);
@@ -13,7 +12,6 @@ const client_id = process.env.CLIENT_ID
 const client_secret = process.env.CLIENT_SECRET
 const redirect_target = process.env.REDIRECT_TARGET
 const target_resource = process.env.TARGET_RESOURCE
-
 
 async function main(){
   const b2cIssuer = await Issuer.discover(well_known_endpoint);
@@ -45,7 +43,6 @@ async function main(){
     }
     let result = await db('dawe_auth_tokens').insert(record).returning('*');
   }
-  // console.log('Finished')
 }
 
 (async () => {
@@ -55,7 +52,5 @@ async function main(){
         process.exit(0)
     } catch (e) {
       console.debug(e)
-        // Deal with the fact the chain failed
     }
 })();
-/* eslint-enable */
