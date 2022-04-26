@@ -29,8 +29,6 @@ const session_secret = process.env.SESSION_SECRET
 
 const fetch = require('node-fetch')
 
-run().catch(err => console.log(err));
-
 async function get_estabs(auth_token){
   const est_url = `${process.env.EXPORT_SERVICES_API_HOST}/export-premises-api/premises`
   const est = await fetch(est_url,{
@@ -39,9 +37,7 @@ async function get_estabs(auth_token){
   return est.json()
 }
 
-
-
-async function run() {
+async function main() {
   const users = {}
   users[username] = password
 
@@ -51,15 +47,23 @@ async function run() {
   app.use(express.urlencoded({
     extended: true
   }))
+
+  // This uses basic auth is for development purposes only
+  // For production use you'd want something far more robust
   app.use(basicAuth({
     challenge: true,
     users: users
   }))
   app.set('view engine', 'hbs');
+
+  // Note this is development only session storage
+  // For production use you'd want to persist this somewhere (Maybe redis?)
   app.use(session({
     genid: function(req) {
       return crypto.randomUUID()
     },
+    resave: true,
+    saveUninitialized: true,
     secret: session_secret
   }))
 
@@ -68,8 +72,6 @@ async function run() {
       .select('*')
       .where('farm_username', 'admin')
       .limit(1);
-
-
     const temperature_data = await db.select(db.raw(`
       *
       `
@@ -81,17 +83,6 @@ async function run() {
       linked_estab: linked[0],
       temperature_data: temperature_data
     })
-  }));
-
-  app.get('/health', asyncHandler(async (req, res) => {
-    // Simplest possible test to verify connectivity
-    const db_status = await db.raw(`SELECT 'ok'`);
-    const out = {
-      status: {
-        "db": db_status
-      }
-    }
-    res.json(out)
   }));
 
   app.get('/link_estabs', asyncHandler(async (req, res) => {
@@ -185,3 +176,5 @@ async function run() {
   await app.listen(port);
   console.log(`listening on port: ${port}`)
 }
+
+main().catch(err => console.log(err));
