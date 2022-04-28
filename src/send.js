@@ -41,7 +41,7 @@ async function main(){
     response_types: ['code'],
   });
 
-  client[custom.clock_tolerance] = 5;
+  client[custom.clock_tolerance] = 10;
 
   let authresults = await db('dawe_auth_tokens')
     .select('*')

@@ -121,7 +121,7 @@ async function main() {
     response_types: ['code'],
   });
 
-  client[custom.clock_tolerance] = 5;
+  client[custom.clock_tolerance] = 10;
 
   app.get('/connect', asyncHandler(async (req, res) => {
     const code_verifier = generators.codeVerifier();
