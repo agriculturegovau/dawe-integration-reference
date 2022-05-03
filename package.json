@@ -7,6 +7,7 @@
     "start": "node src/index.js",
     "test": "test",
     "refresh": "node src/refresh.js",
+    "reset" : "node src/reset.js",
     "seed": "node src/seed.js",
     "send": "node src/send.js",
     "migrate": "knex migrate:latest"
