@@ -1,6 +1,5 @@
 const openid_client = require ('openid-client');
 const Issuer = openid_client.Issuer
-const generators = openid_client.generators
 const custom = openid_client.custom
 const well_known_endpoint = process.env.B2C_WELL_KNOWN_ENDPOINT
 const client_id = process.env.CLIENT_ID

@@ -15,7 +15,7 @@ async function get_records(){
       `
     ))
     .from('temperature_data')
-  for (item of data){
+  for (let item of data){
     item["reporting_date"] = date_format(item["reporting_date"])
     item["temp"] = parseFloat(item["temp"])
   }

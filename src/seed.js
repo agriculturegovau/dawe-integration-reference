@@ -30,8 +30,8 @@ async function get_records(){
 async function main(){
   await db('temperature_data').delete()
   let records = await get_records()
-  for (item of records){
-    let result = await db('temperature_data').insert(item).returning('*');
+  for (let item of records){
+    await db('temperature_data').insert(item);
   }
   console.log('Finished')
 

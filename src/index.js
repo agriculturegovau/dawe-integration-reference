@@ -7,12 +7,12 @@ const port = process.env.PORT || 8080;
 const express = require('express');
 const morgan = require('morgan');
 const openid_client = require ('openid-client');
-const Issuer = openid_client.Issuer
+
 const generators = openid_client.generators
-const custom = openid_client.custom
+
 const session = require('express-session')
 const crypto = require('crypto');
-const hbs = require('hbs');
+require('hbs');
 const basicAuth = require('express-basic-auth')
 const initOauth = require('./lib/oauth.js')
 const fetch = require('node-fetch')
@@ -54,7 +54,7 @@ async function main() {
   // Note this is development only session storage
   // For production use you'd want to persist this somewhere (Maybe redis?)
   app.use(session({
-    genid: function(req) {
+    genid: function() {
       return crypto.randomUUID()
     },
     resave: true,
@@ -106,7 +106,7 @@ async function main() {
       "establishment_num" : data["estab_num"],
       "farm_username" : "admin"
     }
-    let result = await db('estab_mapping').insert(record).returning('*');
+    await db('estab_mapping').insert(record).returning('*');
     return res.redirect(302, '/')
   }))
 
@@ -137,7 +137,7 @@ async function main() {
       refresh_token: tokenSet.refresh_token,
       farm_username: "admin"
     }
-    let result = await db('dawe_auth_tokens').insert(record).returning('*');
+    await db('dawe_auth_tokens').insert(record).returning('*');
     req.session.logged_in = true
     req.session.name = tokenSet.claims().name
 

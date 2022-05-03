@@ -2,7 +2,6 @@ require('dotenv').config()
 const  knex = require('knex');
 const knex_config = require('../knexfile.js');
 const db = knex(knex_config["development"]);
-const fetch = require('node-fetch')
 const initOauth = require('./lib/oauth.js')
 
 async function main(){
@@ -23,7 +22,7 @@ async function main(){
       refresh_token: tokenSet.refresh_token,
       farm_username: "admin"
     }
-    let result = await db('dawe_auth_tokens').insert(record).returning('*');
+    await db('dawe_auth_tokens').insert(record).returning('*');
   }
 }
 
