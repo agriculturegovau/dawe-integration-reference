@@ -7,8 +7,10 @@
     "start": "node src/index.js",
     "test": "test",
     "refresh": "node src/refresh.js",
+    "reset": "node src/reset.js",
     "seed": "node src/seed.js",
     "send": "node src/send.js",
+    "lint": "eslint 'src/**/*.js'",
     "migrate": "knex migrate:latest"
   },
   "author": "",
@@ -25,5 +27,8 @@
     "node-fetch": "^2.6.1",
     "openid-client": "^5.1.4",
     "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0"
   }
 }

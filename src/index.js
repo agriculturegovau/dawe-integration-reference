@@ -7,23 +7,22 @@ const port = process.env.PORT || 8080;
 const express = require('express');
 const morgan = require('morgan');
 const openid_client = require ('openid-client');
-const Issuer = openid_client.Issuer
+
 const generators = openid_client.generators
-const custom = openid_client.custom
+
 const session = require('express-session')
 const crypto = require('crypto');
-const hbs = require('hbs');
+require('hbs');
 const basicAuth = require('express-basic-auth')
-const well_known_endpoint = process.env.B2C_WELL_KNOWN_ENDPOINT
-const client_id = process.env.CLIENT_ID
-const client_secret = process.env.CLIENT_SECRET
+const initOauth = require('./lib/oauth.js')
+const fetch = require('node-fetch')
+
 const redirect_target = process.env.REDIRECT_TARGET
 const target_resource = process.env.TARGET_RESOURCE
+
 const username = process.env.USERNAME
 const password = process.env.PASSWORD
 const session_secret = process.env.SESSION_SECRET
-
-const fetch = require('node-fetch')
 
 async function get_estabs(auth_token){
   const est_url = `${process.env.EXPORT_SERVICES_API_HOST}/export-premises-api/premises`
@@ -55,13 +54,15 @@ async function main() {
   // Note this is development only session storage
   // For production use you'd want to persist this somewhere (Maybe redis?)
   app.use(session({
-    genid: function(req) {
+    genid: function() {
       return crypto.randomUUID()
     },
     resave: true,
     saveUninitialized: true,
     secret: session_secret
   }))
+
+  const client = await initOauth()
 
   app.get('/', asyncHandler(async (req, res) => {
     let linked = await db('estab_mapping')
@@ -91,9 +92,7 @@ async function main() {
       const tokenSet = await client.refresh(results[0]["refresh_token"]);
       await new Promise(r => setTimeout(r, 2000));
       const auth_token = tokenSet['id_token']
-      console.debug(auth_token)
       data = await get_estabs(auth_token)
-      console.debug(data)
     }
     res.render('link_estabs', {
       estabs: data["data"]
@@ -107,21 +106,9 @@ async function main() {
       "establishment_num" : data["estab_num"],
       "farm_username" : "admin"
     }
-    let result = await db('estab_mapping').insert(record).returning('*');
-    console.debug(result)
+    await db('estab_mapping').insert(record).returning('*');
     return res.redirect(302, '/')
   }))
-
-  const b2cIssuer = await Issuer.discover(well_known_endpoint);
-
-  const client = new b2cIssuer.Client({
-    client_id: client_id,
-    client_secret: client_secret,
-    redirect_uris: [redirect_target],
-    response_types: ['code'],
-  });
-
-  client[custom.clock_tolerance] = 5;
 
   app.get('/connect', asyncHandler(async (req, res) => {
     const code_verifier = generators.codeVerifier();
@@ -150,7 +137,7 @@ async function main() {
       refresh_token: tokenSet.refresh_token,
       farm_username: "admin"
     }
-    let result = await db('dawe_auth_tokens').insert(record).returning('*');
+    await db('dawe_auth_tokens').insert(record).returning('*');
     req.session.logged_in = true
     req.session.name = tokenSet.claims().name
 
