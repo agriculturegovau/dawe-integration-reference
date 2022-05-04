@@ -1,0 +1,22 @@
+on:
+  [pull_request]
+
+env:
+  NODE_VERSION: '16.x'
+
+jobs:
+  container-job:
+    name: Test
+    runs-on: ubuntu-latest
+    container: node:16-alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Require lockfile version 2
+        run: "grep '\"lockfileVersion\": 2' package-lock.json"
+      - run: npm install
+      - run : npm run lint
+
