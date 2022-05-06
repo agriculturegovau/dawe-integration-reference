@@ -8,6 +8,7 @@
     "test": "test",
     "refresh": "node src/refresh.js",
     "reset": "node src/reset.js",
+    "clear": "node src/clear.js",
     "seed": "node src/seed.js",
     "send": "node src/send.js",
     "lint": "eslint 'src/**/*.js'",
