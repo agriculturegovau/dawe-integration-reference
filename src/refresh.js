@@ -13,7 +13,7 @@ async function main(){
     .limit(1);
   if (results[0]){
     const tokenSet = await client.refresh(results[0]["refresh_token"]);
-    // console.log('refreshed ID Token claims %j', tokenSet.claims());
+    console.debug(tokenSet)
     let expires = new Date();
     expires = new Date(expires.getTime() + 1000 * tokenSet.refresh_token_expires_in);
     let record = {
