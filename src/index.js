@@ -90,7 +90,6 @@ async function main() {
     .limit(1);
     if (results[0]){
       const tokenSet = await client.refresh(results[0]["refresh_token"]);
-      await new Promise(r => setTimeout(r, 2000));
       const auth_token = tokenSet['id_token']
       data = await get_estabs(auth_token)
     }
