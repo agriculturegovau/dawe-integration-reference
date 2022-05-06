@@ -27,13 +27,12 @@ async function main(){
 
 async function clear(establishment_num, auth_token){
   const est_url = `${process.env.EXPORT_SERVICES_API_HOST}/intelligenceapi/temperature/${establishment_num}`
-  const est = await fetch(est_url,{
+  return fetch(est_url,{
     method: 'DELETE',
     headers: {
       'authorization': `Bearer ${auth_token}`
     }
   });
-  return
 }
 
 (async () => {
