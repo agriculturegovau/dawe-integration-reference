@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
-<style>
 
-</style>
 <body>
 
 You are authorized to act for the following establishments.
+
 <br>
-Please choose the one you're uploading data for:
+Please choose the one you want to upload data on behalf of
 
 {{#each estabs}}
 <hr>
@@ -17,9 +16,23 @@ Please choose the one you're uploading data for:
   DAWE registration number: <b>{{this.registrationNum}}</b>
   <form action="/link_estabs" method="post">
     <input type="hidden" name="estab_num" value="{{this.registrationNum}}">
-    <input type="submit" value="Choose">
+    <input type="submit" value="Choose" name="submit" disabled="true">
   </form>
 {{/each}}
 <hr>
+<input type="checkbox" id="tandcs"> I have read and agree with the <a href="https://www.awe.gov.au/about/payments/terms-conditions"> terms and conditions </a>
 </body>
 </html>
+
+<script>
+  var checker = document.getElementById('tandcs');
+  var sendbtns = document.getElementsByName('submit');
+  checker.onchange = function() {
+    var checked = this.checked
+    sendbtns.forEach(
+      function(node) {
+        node.disabled = !checked;
+      }
+    )
+  };
+</script>
