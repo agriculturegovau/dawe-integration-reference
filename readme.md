@@ -1,5 +1,5 @@
 Start a postgres database with
-docker run -it --rm -e POSTGRES_PASSWORD=password -p 5432:5432 --name pg -v pgdata:/var/lib/postgresql/data postgres
+docker run -it --rm -e POSTGRES_PASSWORD=YOUR_PASSWORD_HERE -p 5432:5432 --name pg -v pgdata:/var/lib/postgresql/data postgres
 
 
 The export services uses Azure B2C, using the customer flow. It's wired into the DTA and the ATO at present, and users will use their real identities/ ABNs, as verified by the ATO to log in. There are plans to support microsofts AD (active directory) as an auth mechanism.
